@@ -75,14 +75,9 @@ function main() {
 	// GM_log('test if ok');
 	// GM_log(location.href);
 	const bvReg = new RegExp('(?<=/)BV.+?(?=/)');
-	const bv = bvReg.exec(location.href)[0];
-	GM_log(`find: [${bv}]`);
-	GM_log(`av: [${bv2av(bv)}]`);
-
-
 
 	let btn = document.createElement("span");
-	btn.innerHTML = "复制av链接";
+	btn.innerText = '复制 av 号链接';
 	btn.style.setProperty('padding-left', '20px');
 	btn.style.setProperty('cursor', 'pointer');
 
@@ -96,18 +91,26 @@ function main() {
 	// toolBar.appendChild(btn);
 
 	btn.addEventListener('click', (e) => {
+		const bv = bvReg.exec(location.href)[0];
+		let search = new URLSearchParams(location.search);
+		let outputQuery = new URLSearchParams();
+		if (search.has('p')) {
+			outputQuery.set('p', search.get('p'));
+		}
+		let outputQueryStr = outputQuery.toString();
+
         if (navigator.clipboard) {
-            const text = `https://www.bilibili.com/video/${bv2av(bv)}`;
+            const text = `https://www.bilibili.com/video/${bv2av(bv)}${outputQueryStr.length !== 0 ? '?' + outputQueryStr : ''}`;
             GM_log(text);
             navigator.clipboard.writeText(text);
-            e.target.innerHTML = '复制成功';
+            btn.innerText = '复制成功';
             setTimeout(() => {
-                e.target.innerHTML = '复制 av 号链接';
+                btn.innerText = '复制 av 号链接';
             }, 1000);
         }
     });
 
-	
+
 
 };
 
